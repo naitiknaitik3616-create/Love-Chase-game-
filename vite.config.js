@@ -1,14 +1,13 @@
-import { defineConfig } from 'vite';
-import basicSsl from '@vitejs/plugin-basic-ssl';
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [basicSsl()],
-  server: {
-    port: 5173,
-    open: true
-  },
+  base: '/',
   build: {
     outDir: 'dist',
-    sourcemap: false
+    sourcemap: false,
+  },
+  server: {
+    port: 5173,
+    host: true
   }
-});
+})
