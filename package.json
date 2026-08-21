@@ -1,18 +1,1 @@
-{
-  "name": "love-chase-game",
-  "version": "1.0.0",
-  "description": "Manav × Twinkle — Love Chase: A 3D romantic endless runner game",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "three": "^r128"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-basic-ssl": "^1.0.1",
-    "vite": "^5.0.0"
-  }
-}
+{\n  \"name\": \"love-chase-game\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Manav × Twinkle — Love Chase: A 3D romantic endless runner game\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"dev\": \"vite\",\n    \"build\": \"vite build\",\n    \"preview\": \"vite preview\"\n  },\n  \"dependencies\": {\n    \"three\": \"^0.128.0\"\n  },\n  \"devDependencies\": {\n    \"@vitejs/plugin-basic-ssl\": \"^1.0.1\",\n    \"vite\": \"^5.0.0\"\n  }\n}\n
