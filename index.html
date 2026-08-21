@@ -1,534 +1,430 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MANAV × TWINKLE — LOVE CHASE</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAV × TWINKLE — LOVE CHASE 🎮❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #000;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff1493 0%, #ba55d3 50%, #1e90ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
 
-    #canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+        #app {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-    #ui {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1000;
-    }
+        .game-container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            width: 100%;
+        }
 
-    .screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      pointer-events: auto;
-      z-index: 1001;
-    }
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(255, 20, 147, 0.8);
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
 
-    .screen.active {
-      display: flex;
-    }
+        .subtitle {
+            font-size: 1.8em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
 
-    #menuScreen {
-      background: linear-gradient(135deg, #ff1493 0%, #ff69b4 50%, #ba55d3 100%);
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 40px;
-    }
+        .controls {
+            margin: 35px 0;
+            font-size: 1.2em;
+            line-height: 2;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #ff1493;
+        }
 
-    .logo {
-      text-align: center;
-      color: white;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
+        .controls p {
+            margin: 10px 0;
+        }
 
-    .logo h1 {
-      font-size: 4rem;
-      margin-bottom: 10px;
-      font-weight: 900;
-      letter-spacing: 3px;
-    }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
 
-    .logo p {
-      font-size: 1.5rem;
-      font-weight: 300;
-      letter-spacing: 2px;
-    }
+        button {
+            padding: 16px 35px;
+            font-size: 1.1em;
+            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-    .menu-buttons {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+        button:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(1.08);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+        }
 
-    button {
-      padding: 15px 40px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
+        button:active {
+            transform: scale(0.95);
+        }
 
-    .btn-primary {
-      background: white;
-      color: #ff1493;
-      flex: 1;
-      min-width: 120px;
-    }
+        .loading {
+            font-size: 1.3em;
+            margin-top: 35px;
+            animation: pulse 1.5s infinite;
+            font-weight: 600;
+        }
 
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
 
-    .btn-secondary {
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: 2px solid white;
-      flex: 1;
-      min-width: 120px;
-    }
+        .footer {
+            margin-top: 35px;
+            font-size: 1em;
+            opacity: 0.85;
+            font-weight: 500;
+        }
 
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.3);
-      transform: translateY(-3px);
-    }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
 
-    #levelSelectScreen {
-      background: linear-gradient(135deg, #ba55d3 0%, #9370db 100%);
-      flex-direction: column;
-      padding: 40px;
-    }
+        #gameCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
 
-    .level-select-header {
-      color: white;
-      margin-bottom: 30px;
-      text-align: center;
-    }
+        .dare-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff1493 0%, #ba55d3 100%);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
 
-    .level-select-header h2 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
+        .dare-screen.active {
+            display: flex;
+        }
 
-    .level-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-      gap: 10px;
-      max-height: 60vh;
-      overflow-y: auto;
-      padding: 20px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 20px;
-    }
+        .dare-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
 
-    .level-btn {
-      aspect-ratio: 1;
-      padding: 0;
-      font-size: 0.9rem;
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 10px;
-      font-weight: 600;
-    }
+        .dare-box h2 {
+            color: #ff1493;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
 
-    .level-btn:hover {
-      background: rgba(255,255,255,0.2);
-    }
+        .dare-box p {
+            color: #333;
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
 
-    .level-btn.locked {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ff1493;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            background: rgba(255, 20, 147, 0.05);
+            color: #333;
+        }
 
-    .level-btn.completed {
-      background: #00ff88;
-      color: #000;
-      border-color: #00ff88;
-    }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ba55d3;
+            box-shadow: 0 0 10px rgba(255, 20, 147, 0.3);
+        }
 
-    #dareScreen {
-      background: linear-gradient(135deg, #ff1493 0%, #ff69b4 50%, #ba55d3 100%);
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-    }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
 
-    .dare-container {
-      background: white;
-      border-radius: 30px;
-      padding: 50px;
-      max-width: 600px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      text-align: center;
-    }
+        .dare-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
 
-    .dare-title {
-      font-size: 2rem;
-      color: #ff1493;
-      margin-bottom: 30px;
-      font-weight: 900;
-    }
+        .dare-buttons button {
+            flex: 1;
+            background: #ff1493;
+            color: white;
+            border: none;
+            padding: 12px;
+        }
 
-    .dare-label {
-      font-size: 1.2rem;
-      color: #333;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
+        .dare-buttons button:hover {
+            background: #ff69b4;
+        }
 
-    .dare-text {
-      font-size: 1.3rem;
-      color: #555;
-      line-height: 1.8;
-      margin-bottom: 30px;
-      padding: 20px;
-      background: rgba(255, 20, 147, 0.1);
-      border-radius: 15px;
-      border-left: 5px solid #ff1493;
-    }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
 
-    .dare-input-section {
-      margin-bottom: 20px;
-    }
+            .subtitle {
+                font-size: 1.3em;
+            }
 
-    textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 15px;
-      font-size: 1rem;
-      border: 2px solid #ff1493;
-      border-radius: 10px;
-      font-family: inherit;
-      resize: vertical;
-    }
+            .game-container {
+                padding: 30px;
+            }
 
-    textarea:focus {
-      outline: none;
-      border-color: #ba55d3;
-      box-shadow: 0 0 10px rgba(255, 20, 147, 0.3);
-    }
-
-    .file-input-wrapper {
-      margin: 20px 0;
-    }
-
-    .file-input-wrapper input[type="file"] {
-      display: none;
-    }
-
-    .file-input-label {
-      display: inline-block;
-      padding: 12px 30px;
-      background: #ff69b4;
-      color: white;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      border: 2px solid #ff69b4;
-    }
-
-    .file-input-label:hover {
-      background: #ff1493;
-      border-color: #ff1493;
-    }
-
-    .file-preview {
-      margin-top: 15px;
-      padding: 10px;
-      background: rgba(255, 20, 147, 0.1);
-      border-radius: 10px;
-      color: #555;
-      font-size: 0.9rem;
-    }
-
-    .file-preview img, .file-preview video {
-      max-width: 100%;
-      max-height: 150px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-
-    .submit-dare-btn {
-      width: 100%;
-      padding: 18px;
-      font-size: 1.1rem;
-      background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
-      color: white;
-      border: none;
-      border-radius: 15px;
-      cursor: pointer;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-    }
-
-    .submit-dare-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
-    }
-
-    .submit-dare-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    #gameHUD {
-      padding: 20px;
-      color: white;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-      pointer-events: none;
-    }
-
-    .hud-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    .hud-stat {
-      background: rgba(0,0,0,0.5);
-      padding: 15px 25px;
-      border-radius: 15px;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .distance-meter {
-      width: 100%;
-      height: 40px;
-      background: rgba(0,0,0,0.7);
-      border-radius: 20px;
-      overflow: hidden;
-      margin-bottom: 20px;
-      border: 2px solid #ff1493;
-    }
-
-    .distance-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #ff1493 0%, #ff69b4 100%);
-      width: 100%;
-      transition: width 0.1s ease;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 15px;
-      color: white;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-
-    .distance-label {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 5px;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.8);
-    }
-
-    #levelCompleteScreen {
-      background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 30px;
-      padding: 40px;
-    }
-
-    .level-complete-card {
-      background: white;
-      border-radius: 30px;
-      padding: 50px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    .level-complete-card h2 {
-      font-size: 2.5rem;
-      color: #00cc6a;
-      margin-bottom: 20px;
-    }
-
-    .level-stats {
-      text-align: left;
-      background: rgba(0,255,136,0.1);
-      padding: 20px;
-      border-radius: 15px;
-      margin-bottom: 20px;
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(0,255,136,0.3);
-      color: #333;
-    }
-
-    .stat-row:last-child {
-      border-bottom: none;
-    }
-
-    .stat-label {
-      font-weight: 600;
-    }
-
-    .stat-value {
-      color: #00cc6a;
-      font-weight: 700;
-    }
-
-    .back-btn, .next-level-btn {
-      pointer-events: auto;
-    }
-
-    @media (max-width: 768px) {
-      .logo h1 {
-        font-size: 2.5rem;
-      }
-
-      .logo p {
-        font-size: 1.2rem;
-      }
-
-      .dare-container {
-        padding: 30px;
-        max-width: 100%;
-      }
-
-      .level-grid {
-        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-      }
-
-      button {
-        padding: 12px 25px;
-        font-size: 1rem;
-      }
-    }
-  </style>
+            button {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
-  <div id="ui">
-    <div id="menuScreen" class="screen active">
-      <div class="logo">
-        <h1>MANAV × TWINKLE</h1>
-        <p>LOVE CHASE</p>
-      </div>
-      <div class="menu-buttons">
-        <button class="btn-primary" id="playBtn">PLAY</button>
-        <button class="btn-secondary" id="levelsBtn">LEVELS</button>
-        <button class="btn-secondary" id="settingsBtn">SETTINGS</button>
-      </div>
-    </div>
+    <div id="app">
+        <div class="game-container">
+            <h1>🎮 MANAV × TWINKLE 💕</h1>
+            <p class="subtitle">LOVE CHASE — 250 Levels!</p>
+            
+            <div class="controls">
+                <p><strong>⬅️ ➡️</strong> Move | <strong>⬆️</strong> Jump | <strong>⬇️</strong> Slide</p>
+                <p>📱 Mobile: Swipe to move</p>
+            </div>
 
-    <div id="levelSelectScreen" class="screen">
-      <div class="level-select-header">
-        <button class="btn-secondary" id="backFromLevelBtn" style="position: absolute; top: 20px; left: 20px;">← BACK</button>
-        <h2>SELECT LEVEL</h2>
-        <p id="levelInfo" style="font-size: 1.2rem; margin-top: 10px;">250 LEVELS TOTAL</p>
-      </div>
-      <div id="levelGrid" class="level-grid"></div>
-    </div>
+            <div class="button-group">
+                <button onclick="startGame()">▶️ PLAY GAME</button>
+                <button onclick="openRepo()">📂 VIEW CODE</button>
+            </div>
 
-    <div id="dareScreen" class="screen">
-      <div class="dare-container">
-        <h2 class="dare-title">TWINKLE GOT CAUGHT! 😈</h2>
-        <p class="dare-label">YOUR DARE</p>
-        <div class="dare-text" id="dareText"></div>
-        
-        <div class="dare-input-section">
-          <label for="dareAnswer" class="dare-label">YOUR ANSWER</label>
-          <textarea id="dareAnswer" placeholder="Type your response here..."></textarea>
+            <div class="loading">🔄 Click PLAY to start the adventure...</div>
+            <p class="footer">Made with ❤️ for Twinkle & Manav</p>
         </div>
-
-        <div class="file-input-wrapper">
-          <label for="dareFile" class="file-input-label">+ ATTACH FILE</label>
-          <input type="file" id="dareFile" accept="image/*,video/*,audio/*">
-          <div id="filePreview" class="file-preview" style="display: none;"></div>
-        </div>
-
-        <button class="submit-dare-btn" id="submitDareBtn">SUBMIT DARE ❤️</button>
-      </div>
     </div>
 
-    <div id="levelCompleteScreen" class="screen">
-      <div class="level-complete-card">
-        <h2>LEVEL COMPLETE ❤️</h2>
-        <div class="level-stats">
-          <div class="stat-row">
-            <span class="stat-label">LEVEL</span>
-            <span class="stat-value" id="completedLevel">1</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">TIME</span>
-            <span class="stat-value" id="completedTime">0s</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">SCORE</span>
-            <span class="stat-value" id="completedScore">0</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">BEST SCORE</span>
-            <span class="stat-value" id="completedBestScore">0</span>
-          </div>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="dareScreen" class="dare-screen">
+        <div class="dare-box">
+            <h2>🎯 DARE UNLOCKED! 🎯</h2>
+            <p id="dareText" style="color: #666; font-size: 1.3em; background: rgba(255,20,147,0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #ff1493;"></p>
+            <input type="text" id="dareAnswer" placeholder="Your answer...">
+            <div class="dare-buttons">
+                <button onclick="completeDare()">✅ SUBMIT</button>
+                <button onclick="closeGame()" style="background: #999;">← BACK</button>
+            </div>
         </div>
-        <button class="btn-primary next-level-btn" id="nextLevelBtn">NEXT LEVEL</button>
-      </div>
     </div>
 
-    <div id="gameHUD">
-      <div class="hud-top">
-        <div class="hud-stat">LEVEL: <span id="hudLevel">1</span></div>
-        <div class="hud-stat">SCORE: <span id="hudScore">0</span></div>
-        <div class="hud-stat">SPEED: <span id="hudSpeed">1.0x</span></div>
-      </div>
-      <div class="distance-meter">
-        <div class="distance-bar" id="distanceBar" style="width: 100%;">
-          <span>TWINKLE</span>
-          <span>MANAV</span>
-        </div>
-      </div>
-      <div class="distance-label">
-        <span>DISTANCE: <span id="distanceValue">100m</span></span>
-        <span id="catchWarning" style="color: #ff1493; display: none; font-weight: 900;">⚠️ GETTING CLOSER ⚠️</span>
-      </div>
-    </div>
-  </div>
+    <script type="module">
+        // Using Three.js from CDN
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@r128/build/three.module.js';
 
-  <script type="module" src="/src/main.js"></script>
+        let scene, camera, renderer;
+        let gameRunning = false;
+        let gameStarted = false;
+
+        const DARES = [
+            "Tell me 3 things you love about me 💕",
+            "Send me a selfie with a silly face 😜",
+            "Write me a love poem in 2 minutes ✍️",
+            "Sing a song dedicated to me 🎵",
+            "Do 10 pushups! 💪",
+            "Tell me your favorite memory with me 📸",
+            "Draw a picture for me 🎨",
+            "List 5 reasons you like me ❤️",
+            "Send a voice message 🎤",
+            "Do a funny dance! 💃"
+        ];
+
+        window.startGame = function() {
+            if (gameStarted) return;
+            gameStarted = true;
+            gameRunning = true;
+
+            const app = document.getElementById('app');
+            app.style.display = 'none';
+
+            const canvas = document.getElementById('gameCanvas');
+            canvas.style.display = 'block';
+
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a2e);
+            scene.fog = new THREE.Fog(0x1a1a2e, 150, 400);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 12);
+
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+
+            // Lights
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(30, 30, 30);
+            light.castShadow = true;
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+            // Ground
+            const groundGeo = new THREE.PlaneGeometry(20, 500);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x4a4a6a });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Player
+            const playerGeo = new THREE.BoxGeometry(1, 2, 1);
+            const playerMat = new THREE.MeshStandardMaterial({ color: 0xff1493 });
+            const player = new THREE.Mesh(playerGeo, playerMat);
+            player.position.y = 1;
+            player.castShadow = true;
+            scene.add(player);
+
+            // Chaser
+            const chaserGeo = new THREE.BoxGeometry(1, 2, 1);
+            const chaserMat = new THREE.MeshStandardMaterial({ color: 0x1e90ff });
+            const chaser = new THREE.Mesh(chaserGeo, chaserMat);
+            chaser.position.set(0, 1, -50);
+            chaser.castShadow = true;
+            scene.add(chaser);
+
+            // Game state
+            let playerX = 0, playerZ = 0, chaserZ = -50;
+            let speed = 0.3, level = 1, score = 0;
+            const keys = {};
+
+            window.addEventListener('keydown', (e) => keys[e.key] = true);
+            window.addEventListener('keyup', (e) => keys[e.key] = false);
+
+            // Game loop
+            const animate = () => {
+                if (!gameRunning) return;
+                requestAnimationFrame(animate);
+
+                if (keys['ArrowLeft'] || keys['a']) playerX = Math.max(-8, playerX - 0.3);
+                if (keys['ArrowRight'] || keys['d']) playerX = Math.min(8, playerX + 0.3);
+                if (keys['ArrowUp'] || keys['w'] || keys[' ']) player.position.y = Math.max(1, player.position.y - 0.3);
+
+                player.position.x = playerX;
+                player.position.z = playerZ;
+
+                chaserZ += speed * 0.5;
+                chaser.position.z = chaserZ;
+
+                const distance = Math.abs(player.position.z - chaser.position.z);
+
+                if (distance > 1) speed += 0.0001;
+                playerZ += speed;
+                score += speed;
+
+                camera.position.x = playerX * 0.3;
+                camera.position.z = playerZ + 12;
+                camera.lookAt(playerX, 2, playerZ);
+
+                if (distance < 3) {
+                    gameRunning = false;
+                    showDare();
+                    return;
+                }
+
+                renderer.render(scene, camera);
+            };
+
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+
+        function showDare() {
+            const dare = DARES[Math.floor(Math.random() * DARES.length)];
+            document.getElementById('dareText').textContent = dare;
+            document.getElementById('dareScreen').classList.add('active');
+            document.getElementById('dareAnswer').value = '';
+            document.getElementById('dareAnswer').focus();
+        }
+
+        window.completeDare = function() {
+            const answer = document.getElementById('dareAnswer').value;
+            if (!answer.trim()) {
+                alert('Please write something! 💕');
+                return;
+            }
+            alert('❤️ Dare submitted! You rock! 🎉\n\nNext level unlocked!');
+            location.reload();
+        };
+
+        window.closeGame = function() {
+            gameRunning = false;
+            document.getElementById('dareScreen').classList.remove('active');
+            location.reload();
+        };
+
+        window.openRepo = () => window.open('https://github.com/naitiknaitik3616-create/Love-Chase-game-', '_blank');
+    </script>
 </body>
 </html>
